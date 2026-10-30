@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Package (Dart ${{ matrix.sdk }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The lowest SDK in pubspec.yaml, and the latest.
+        sdk: ['3.9.0', stable]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ matrix.sdk }}
+      - run: dart pub get
+      - name: Check formatting
+        if: matrix.sdk == 'stable'
+        run: dart format --output=none --set-exit-if-changed lib test example/example.dart
+      - run: dart analyze --fatal-infos
+      - run: dart test
+
+  lowest-dependencies:
+    name: Package (lowest dependencies)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.9.0'
+      - run: dart pub downgrade
+      # Only lib/: the test runner's own lowest dependencies do not compile
+      # on current SDKs.
+      - run: dart analyze --fatal-infos lib
+
+  example-app:
+    name: Example app (Flutter ${{ matrix.flutter }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter: ['3.35.x', stable]
+    defaults:
+      run:
+        working-directory: example/app
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter == 'stable' && '' || matrix.flutter }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Check formatting
+        if: matrix.flutter == 'stable'
+        run: dart format --output=none --set-exit-if-changed .
+      - run: flutter analyze
+      - run: flutter test

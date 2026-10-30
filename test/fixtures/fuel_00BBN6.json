@@ -1,0 +1,13 @@
+[
+    {
+        "kenteken": "00BBN6",
+        "brandstof_volgnummer": "1",
+        "brandstof_omschrijving": "Diesel",
+        "emissiecode_omschrijving": "5",
+        "milieuklasse_eg_goedkeuring_zwaar": "2005/55*2008/74K",
+        "uitstoot_deeltjes_zwaar": "0.00100",
+        "nettomaximumvermogen": "95.00",
+        "uitlaatemissieniveau": "EEV K",
+        "co2_emissieklasse": "1"
+    }
+]
