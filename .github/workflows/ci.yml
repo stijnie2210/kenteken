@@ -48,7 +48,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flutter: ['3.35.x', stable]
+        include:
+          - flutter: '3.35.x'
+            version: '3.35.x'
+          # An empty version means the latest release on the channel.
+          - flutter: stable
+            version: ''
     defaults:
       run:
         working-directory: example/app
@@ -56,7 +61,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ matrix.flutter == 'stable' && '' || matrix.flutter }}
+          flutter-version: ${{ matrix.version }}
           channel: stable
           cache: true
       - run: flutter pub get
