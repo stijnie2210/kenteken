@@ -3,6 +3,7 @@ description: >-
   Parse, validate and format Dutch licence plates (kentekens) by sidecode, and
   look up vehicle details, fuel data and recalls in RDW open data.
 version: 1.0.0
+repository: https://github.com/stijnie2210/kenteken
 topics:
   - netherlands
   - license-plate
